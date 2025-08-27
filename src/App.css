@@ -72,10 +72,10 @@ body {
 }
 
 .logo {
-  height: 48px;
-  width: 165px;
-  height: 60px;  
-  width: auto;
+ height:25.23px;
+  width: 147.64px;
+  top: 24.61px;
+  left: 17.36px;
   object-fit: contain;
   display: block;
 }
