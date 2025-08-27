@@ -1,0 +1,278 @@
+/* =======================
+   Reset & Base Styles 
+========================*/
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+:root {
+  --black-900: #0e0e0e;
+  --black-800: #1a1a1a;
+  --black-700: #2a2a2a;
+  --muted: #9aa3a7;
+  --white: #fff;
+  --accent: #ee2b2b;
+  --topbar-h: 80.07px;
+  --sidebar-w: 130px;
+  --panel-w: 320px;
+  --green: #22c55e;
+  --red: #ef4444;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--black-900);
+  color: var(--white);
+  overflow: hidden;
+}
+
+/* =======================
+   Main Layout 
+========================*/
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  grid-template-rows: var(--topbar-h) 1fr;
+  grid-template-areas:
+    "topbar topbar"
+    "sidebar content";
+  height: 100vh;
+}
+
+/* =======================
+   Topbar 
+========================*/
+.topbar {
+  grid-area: topbar;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: var(--topbar-h);      
+  background: #0e0e0e;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 1px solid #191919;
+}
+
+.topbar .left {
+  display: flex;
+  align-items: center;
+  gap: 100px;
+}
+
+.logo {
+  height: 1.057.39px;
+  width: 165px;
+  object-fit: contain;
+  top: 24.61px;
+}
+
+.topbar .right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #e9ecef;
+}
+
+.icon-btn {
+  background: transparent;
+  color: #e1e5e8;
+  border: 0;
+  padding: 8px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.icon-btn.notif {
+  position: relative;
+}
+
+.badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  line-height: 1;
+  padding: 2px 5px;
+  border-radius: 999px;
+  border: 2px solid var(--black-900);
+}
+
+.v-divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.14);
+  margin: 0 12px;
+}
+
+.user {
+  text-align: left;
+  line-height: 1.2;
+}
+
+.user .hello {
+  font-size: 13px;
+  color: #cfd6da;
+}
+
+.user .hello .name {
+  color: #fff;
+  font-weight: 600;
+}
+
+.user .role {
+  font-size: 11px;
+   color: #9aa3a7;
+}
+
+/* =======================
+   Sidebar 
+========================*/
+.sidebar {
+  grid-area: sidebar;
+  background: var(--black-900);
+  border-right: 1px solid #191919;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+   width: var(--sidebar-w);
+}
+
+.side-item {
+  height: 84px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #b7c0c4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.side-item + .side-item {
+  border-top: 1px solid #181818;
+}
+
+.side-item.active {
+  background: var(--black-700);
+  color: #fff;
+}
+
+.side-item:hover {
+  background: #202020;
+  color: #e8edf0;
+}
+
+.side-icon {
+  font-size: 25px;
+}
+
+.side-label {
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* =======================
+   Content Area 
+========================*/
+.content {
+  grid-area: content;
+  background: #111;
+  position: relative;
+  overflow: hidden;
+   display: flex;
+}
+
+/* =======================
+   Map Canvas
+========================*/
+#map-canvas {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* =======================
+   Drone Panel Extras
+========================*/
+.drone-item.active {
+  background: var(--black-700);
+  border-right: 3px solid var(--accent);
+}
+
+.empty-list {
+  padding: 20px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* =======================
+   Mapbox Overrides
+========================*/
+.mapboxgl-popup {
+  color: #000;
+}
+
+.mapboxgl-popup-content {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 4px;
+  padding: 10px 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.mapboxgl-popup-tip {
+  border-top-color: rgba(255, 255, 255, 0.95);
+}
+
+/* =======================
+   Responsive
+========================*/
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 60px 1fr;
+  }
+  
+  .side-label {
+    display: none;
+  }
+  
+  .side-icon {
+    font-size: 20px;
+  }
+}
