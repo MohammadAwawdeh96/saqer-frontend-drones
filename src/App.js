@@ -7,7 +7,7 @@ import { store } from "./store";
 import MapPage from "./pages/MapPage";
 import { startSocket } from "./services/socket";
 import DroneFloatingIndicator from "./components/panel/DroneFloatingIndicator";
-
+import "mapbox-gl/dist/mapbox-gl.css";
 function App() {
   const [active, setActive] = useState("map"); // 'dashboard' | 'map'
 

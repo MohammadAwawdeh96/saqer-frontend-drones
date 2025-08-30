@@ -41,7 +41,7 @@ export default function DronePanel() {
             />
           ))
         ) : (
-          <div className="empty-list">🚁 There are No Drones currently 🚁</div>
+          <div className="empty-list">🚁 لا يوجد درونز حالياً</div>
         )}
       </div>
 

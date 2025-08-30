@@ -1,15 +1,15 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 
 const initialState = {
-  entities: {},
-  order: [],
+  entities: {},     // تخزين التفاصيل keyed بالـ registration
+  order: [],        // ترتيب الإدخال
   selectedId: null,
   hoveredId: null,
   lastUpdate: null,
 };
 
+// ✅ يحدد إن الطائرة مسموح بها إذا كان رقم التسجيل يبدأ بـ B
 function isAllowed(reg) {
-
   const part = (reg || '').split('-')[1] || '';
   return part.startsWith('B');
 }
@@ -25,14 +25,16 @@ const dronesSlice = createSlice({
 
       for (const f of fc.features) {
         const p = f.properties || {};
-        const id = p.serial;
+        const id = p.registration;           // ✅ نستخدم registration كمفتاح أساسي
         const coord = f.geometry?.coordinates;
-        if (!id || !Array.isArray(coord)) continue;
+
+        if (!id || !Array.isArray(coord)) continue; // تأكد إن التسجيل والإحداثية صح
 
         const allowed = isAllowed(p.registration);
         const prev = state.entities[id];
 
         if (!prev) {
+          // ✅ إنشاء كيان جديد
           state.entities[id] = {
             id,
             serial: p.serial,
@@ -46,17 +48,22 @@ const dronesSlice = createSlice({
             allowed,
             firstSeen: now,
             lastSeen: now,
-            path: [coord],
+            path: [coord], // يبدأ المسار بأول نقطة
           };
           state.order.push(id);
         } else {
-          const path = prev.path;
+          // ✅ تحديث كيان موجود
+          const path = [...prev.path];
           const last = path[path.length - 1];
+
+          // أضف النقطة الجديدة فقط لو مختلفة عن آخر نقطة
           if (!last || last[0] !== coord[0] || last[1] !== coord[1]) {
             path.push(coord);
           }
+
           state.entities[id] = {
             ...prev,
+            serial: p.serial ?? prev.serial,
             registration: p.registration ?? prev.registration,
             altitude: Number(p.altitude) || 0,
             yaw: Number(p.yaw) || 0,
@@ -69,15 +76,21 @@ const dronesSlice = createSlice({
       }
       state.lastUpdate = now;
     },
-    setSelected(state, action) { state.selectedId = action.payload; },
-    setHovered(state, action) { state.hoveredId = action.payload; },
+    setSelected(state, action) {
+      state.selectedId = action.payload;
+    },
+    setHovered(state, action) {
+      state.hoveredId = action.payload;
+    },
   },
 });
 
 export const { upsertFromFeatureCollection, setSelected, setHovered } = dronesSlice.actions;
 export default dronesSlice.reducer;
 
-// Selectors
+// ==================
+// ✅ Selectors
+// ==================
 const selectSlice = (s) => s.drones;
 
 export const selectOrder = (s) => selectSlice(s).order;
@@ -85,15 +98,18 @@ export const selectEntities = (s) => selectSlice(s).entities;
 export const selectSelectedId = (s) => selectSlice(s).selectedId;
 export const selectHoveredId = (s) => selectSlice(s).hoveredId;
 
+// ❇️ جميع الطائرات بالترتيب
 export const selectAllDrones = createSelector(
   [selectOrder, selectEntities],
   (order, map) => order.map((id) => map[id]).filter(Boolean)
 );
 
+// ❇️ العدّاد للطائرات "غير المسموح بها" (حمراء)
 export const selectRedCount = createSelector([selectAllDrones], (arr) =>
   arr.reduce((acc, d) => acc + (d.allowed ? 0 : 1), 0)
 );
 
+// ❇️ نقاط الطائرات (Point features)
 export const selectPointsFC = createSelector([selectAllDrones], (arr) => ({
   type: 'FeatureCollection',
   features: arr.map((d) => ({
@@ -111,6 +127,7 @@ export const selectPointsFC = createSelector([selectAllDrones], (arr) => ({
   })),
 }));
 
+// ❇️ خطوط المسارات (LineString features)
 export const selectLinesFC = createSelector([selectAllDrones], (arr) => ({
   type: 'FeatureCollection',
   features: arr
