@@ -19,7 +19,7 @@ export default function MapView() {
 
   const mapRef = useRef(null);
 
-  // 🗺️ إنشاء الخريطة مرة واحدة
+  
   useEffect(() => {
     if (mapRef.current) return;
 
@@ -32,11 +32,11 @@ export default function MapView() {
     mapRef.current = map;
 
     map.on("load", () => {
-      // المصدر drones لكن يبدأ بفاضي
+    
       map.addSource("drones", { type: "geojson", data: { type:"FeatureCollection", features: [] } });
       map.addSource("selected-path", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
 
-      // تحميل الأيقونات
+ 
       const loadIcon = (name, url) => {
         map.loadImage(url, (err, img) => {
           if (err || !img) return;
@@ -46,7 +46,7 @@ export default function MapView() {
       loadIcon("drone-green", "/icons/drone-green.png");
       loadIcon("drone-red", "/icons/drone-red.png");
 
-      // طبقة الأيقونات
+   
       map.addLayer({
         id: "drones-layer",
         type: "symbol",
@@ -65,7 +65,7 @@ export default function MapView() {
         },
       });
 
-      // طبقة المسار
+    
       map.addLayer({
         id: "selected-path-layer",
         type: "line",
@@ -81,7 +81,7 @@ export default function MapView() {
         },
       });
 
-      // Highlight
+  
       map.addLayer({
         id: "drone-highlight",
         type: "circle",
@@ -95,7 +95,7 @@ export default function MapView() {
         filter: ["==", ["get", "id"], "___none___"],
       });
 
-      // 📌 click
+     
       map.on("click", "drones-layer", (e) => {
         const f = e.features?.[0];
         if (f) dispatch(setSelected(f.properties.id));
@@ -103,7 +103,7 @@ export default function MapView() {
     });
   }, [dispatch]);
 
-  // 🔄 تحديث البيانات للدورنز
+ 
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !map.isStyleLoaded()) return;
@@ -111,7 +111,7 @@ export default function MapView() {
     if (src) src.setData(points);
   }, [points]);
 
-  // 🛩️ تحديث المسار عند اختيار درون
+
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !map.isStyleLoaded()) return;
@@ -124,7 +124,7 @@ export default function MapView() {
 
     const d = entities[selectedId];
     if (d && d.path && d.path.length > 1) {
-      // رسم المسار
+   
       map.getSource("selected-path")?.setData({
         type: "FeatureCollection",
         features: [{
@@ -134,10 +134,9 @@ export default function MapView() {
         }]
       });
 
-      // highlight
       map.setFilter("drone-highlight", ["==", ["get", "id"], selectedId]);
 
-      // Zoom
+  
       const bounds = new mapboxgl.LngLatBounds();
       d.path.forEach(coord => bounds.extend(coord));
       if (!bounds.isEmpty()) {
